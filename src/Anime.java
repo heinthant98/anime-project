@@ -23,7 +23,7 @@ public class Anime {
 			return rating;
 		}
 		else {
-			throw new IllegalArgumentException("Rating must be between 0 to 5.");
+			throw new IllegalArgumentException("【レイティングが5以下になければなりません】");
 		}
 	}
 
