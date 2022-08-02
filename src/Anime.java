@@ -11,7 +11,7 @@ public class Anime {
 		this.title = title;
 		this.genre = genre;
 		this.releasedDate = releasedDate;
-		if (rating >= 0 && rating <= 5) {
+		if (0 < rating && rating <= 5) {
 			this.rating = rating;
 		} else {
 			throw new IllegalArgumentException("【レイティングが5以下になければなりません】");
