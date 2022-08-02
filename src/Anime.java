@@ -23,12 +23,7 @@ public class Anime {
 	}
 
 	public float getRating() {
-		if(rating >= 0 && rating <= 5) {
-			return rating;
-		}
-		else {
-			throw new IllegalArgumentException("【レイティングが5以下になければなりません】");
-		}
+		return rating;
 	}
 
 	public Genre getGenre() {
