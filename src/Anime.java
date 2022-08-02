@@ -19,7 +19,12 @@ public class Anime {
 	}
 
 	public float getRating() {
-		return rating;
+		if(rating >= 0 && rating <= 5) {
+			return rating;
+		}
+		else {
+			throw new IllegalArgumentException("Rating must be between 0 to 5.");
+		}
 	}
 
 	public Genre getGenre() {
