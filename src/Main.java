@@ -48,7 +48,7 @@ public class Main {
 		});
 		
 		System.out.println("【レイティングが一番高いアニメ一覧を表示する】");
-		animes.stream().filter(a -> a.getRating() == 5)
+		animes.stream().filter(a -> a.getRating() == getMaxRating(animes))
 				.forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
 							  .formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
 	}
@@ -59,6 +59,10 @@ public class Main {
 		} else {
 			throw new IllegalArgumentException("Animes or Genre must have data.");
 		}
+	}
+
+	private static float getMaxRating(List<Anime> animes) {
+		return animes.stream().max(Comparator.comparing(Anime::getRating)).get().getRating();
 	}
 
 	private static String toJapaneseFormat(LocalDate releasedDate) {
