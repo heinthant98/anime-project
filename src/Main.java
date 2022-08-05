@@ -53,11 +53,13 @@ public class Main {
 		try (Scanner scan = new Scanner(System.in)) {
 			System.out.println("【見たいアニメは何でしょうか】");
 			String animeName = scan.nextLine();
-			searchAnimesWithTitle(animeName, animes.stream().filter(a -> a.getTitle().toLowerCase().contains(animeName)).collect(Collectors.toList()));
+			List<Anime> sameTitleAnimes = animes.stream().filter(a -> a.getTitle().toLowerCase().contains(animeName)).collect(Collectors.toList());
+			showSameTitleAnimes(animeName, sameTitleAnimes);
 
 			System.out.println("【見たいアニメの種類は何でしょうか】");
 			String animeGenre = scan.nextLine();
-			searchAnimesWithGenre(animeGenre, animes.stream().filter(a -> a.getGenre().toString().toLowerCase().equals(animeGenre)).collect(Collectors.toList()));
+			List<Anime> sameGenreAnimes = animes.stream().filter(a -> a.getGenre().toString().toLowerCase().equals(animeGenre)).collect(Collectors.toList());
+			showSameGenreAnimes(animeGenre, sameGenreAnimes);
 		}
 
 		if (animes.stream().map(Anime::getRating).allMatch(r -> r > 3)) {
@@ -67,7 +69,7 @@ public class Main {
 		}
 	}
 
-	private static void searchAnimesWithTitle(String animeName, List<Anime> animes) {
+	private static void showSameTitleAnimes(String animeName, List<Anime> animes) {
 		if (animes.size() > 0 && animeName.length() > 0) {
 			System.out.println("【検索したアニメの結果(%s)】".formatted(animes.size()));
 			animes.forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
@@ -78,7 +80,7 @@ public class Main {
 		}
 	}
 
-	private static void searchAnimesWithGenre(String genreName, List<Anime> animes) {
+	private static void showSameGenreAnimes(String genreName, List<Anime> animes) {
 		if (animes.size() > 0 && genreName.length() > 0) {
 			System.out.println("【検索したアニメの結果(%s)】".formatted(animes.size()));
 			System.out.println("%s(%d)".formatted(Genre.valueOf(genreName.toUpperCase()), animes.size()));
