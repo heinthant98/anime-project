@@ -70,24 +70,22 @@ public class Main {
 	}
 
 	private static void showSameTitleAnimes(String animeName, List<Anime> animes) {
+		System.out.println("【検索したアニメの結果(%d)】".formatted(animes.size()));
 		if (animes.size() > 0 && animeName.length() > 0) {
-			System.out.println("【検索したアニメの結果(%s)】".formatted(animes.size()));
 			animes.forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
 								.formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
 		} else {
-			System.out.println("【検索したアニメの結果(0)】");
 			System.out.println("【🥺検索した%sが見つかりませんでした】".formatted(animeName));
 		}
 	}
 
 	private static void showSameGenreAnimes(String genreName, List<Anime> animes) {
+		System.out.println("【検索したアニメの結果(%d)】".formatted(animes.size()));
 		if (animes.size() > 0 && genreName.length() > 0) {
-			System.out.println("【検索したアニメの結果(%s)】".formatted(animes.size()));
 			System.out.println("%s(%d)".formatted(Genre.valueOf(genreName.toUpperCase()), animes.size()));
 			animes.forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
 								.formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
 		} else {
-			System.out.println("【検索したアニメの結果(0)】");
 			System.out.println("【🥺検索した%sが見つかりませんでした】".formatted(genreName));
 		}
 	}
