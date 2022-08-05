@@ -1,61 +1,92 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Comparator;
 import java.util.Objects;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class Main {
 
 	public static void main(String[] args) {
-		 List<Anime> animes = List.of(new Anime("ドクターストーン", 5, Genre.ACTION, LocalDate.of(2012, 2, 6)),
-				 	      new Anime("進撃の巨人", 4.5F, Genre.ACTION, LocalDate.of(2011, 1, 5)),
-				 	      new Anime("ホリミヤ", 5, Genre.ROMANCE, LocalDate.of(2021, 2, 26)),
-				 	      new Anime("その 着せ替え人形 ビスク・ドール は恋をする", 5, Genre.ROMANCE, LocalDate.of(2021, 10, 9)),
-				 	      new Anime("日常", 3, Genre.COMEDY, LocalDate.of(2020, 12, 6)),
-					      new Anime("銀魂", 3.5F, Genre.COMEDY, LocalDate.of(2006, 4, 15)),
-				 	      new Anime("Haikyuu", 4, Genre.SPORT, LocalDate.of(2014, 4, 9)),
-				 	      new Anime("Haikyuu Season 2", 4.5F, Genre.SPORT, LocalDate.of(2015, 12, 3)));
+		List<Anime> animes = List.of(new Anime("ドクターストーン", 5, Genre.ACTION, LocalDate.of(2012, 2, 6)),
+					     new Anime("進撃の巨人", 4.5F, Genre.ACTION, LocalDate.of(2011, 1, 5)),
+					     new Anime("ホリミヤ", 5, Genre.ROMANCE, LocalDate.of(2021, 2, 26)),
+					     new Anime("その 着せ替え人形 ビスク・ドール は恋をする", 5, Genre.ROMANCE, LocalDate.of(2021, 10, 9)),
+					     new Anime("日常", 3, Genre.COMEDY, LocalDate.of(2020, 12, 6)),
+					     new Anime("銀魂", 3.5F, Genre.COMEDY, LocalDate.of(2006, 4, 15)),
+					     new Anime("Haikyuu", 4, Genre.SPORT, LocalDate.of(2014, 4, 9)),
+					     new Anime("Haikyuu Season 2", 4.5F, Genre.SPORT, LocalDate.of(2015, 12, 3)));
 
 		Map<Genre, List<Anime>> genreMap = animes.stream().collect(Collectors.groupingBy(Anime::getGenre));
-		
+
 		System.out.println("【すべてのアニメを表示する】");
 		animes.forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
 							.formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
 
 		System.out.println("【コメデイアニメを表示する(%d)】".formatted(sameGenreAnimesCount(animes, Genre.COMEDY)));
-		animes.stream()
-			  .filter(a -> a.getGenre().equals(Genre.COMEDY))
-			  .forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
-							.formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
+		animes.stream().filter(a -> a.getGenre().equals(Genre.COMEDY))
+				.forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
+								.formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
 
 		System.out.println("【ジャンルに沿ってアニメを表示する】");
-		genreMap.keySet().stream().forEach(g ->{
-			System.out.println("%s(%d)".formatted(g, sameGenreAnimesCount(animes, g)));
-			genreMap.get(g).stream().forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
-							 .formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
+		genreMap.keySet().stream().forEach(g -> { 
+				System.out.println("%s(%d)".formatted(g, sameGenreAnimesCount(animes, g)));
+				genreMap.get(g).stream().forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
+														.formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
 		});
-		
+
 		System.out.println("【ジャンルに沿ってアニメをジャンルの昇順に並び替えて表示する】");
-		genreMap.keySet().stream().sorted().forEach(g ->{
+		genreMap.keySet().stream().sorted().forEach(g -> {
 			System.out.println("%s(%d)".formatted(g, sameGenreAnimesCount(animes, g)));
 			genreMap.get(g).stream().forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
-										  .formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
+													.formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
 		});
-		
+
 		System.out.println("【レイティングが一番高いアニメ一覧を表示する】");
 		animes.stream().filter(a -> a.getRating() == getMaxRating(animes))
 				.forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
-							  .formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
-	
+								.formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
+
+		// search-animes
+		try (Scanner scan = new Scanner(System.in)) {
+			System.out.println("【見たいアニメは何でしょうか】");
+			String animeName = scan.nextLine();
+			List<Anime> sameTitleAnimes = animes.stream().filter(a -> a.getTitle().toLowerCase().contains(animeName)).collect(Collectors.toList());
+			showSameTitleAnimes(sameTitleAnimes, animeName);
+
+			System.out.println("【見たいアニメの種類は何でしょうか】");
+			String animeGenre = scan.nextLine();
+			List<Anime> sameGenreAnimes = animes.stream().filter(a -> a.getGenre().toString().toLowerCase().equals(animeGenre)).collect(Collectors.toList());
+			showSameGenreAnimes(sameGenreAnimes, animeGenre);
+		}
+
+		if (animes.stream().map(Anime::getRating).allMatch(r -> r > 3)) {
+			System.out.println("【すべてのアニメのレイティングが3超過】");
+		} else {
+			System.out.println("【3未満のレイティングのアニメもあります】");
+		}
 	}
 
-	private static int sameGenreAnimesCount(List<Anime> animes, Genre genre) {
-		if(animes.size() > 0 && Objects.nonNull(genre)) {
-			return animes.stream().filter(a -> a.getGenre().equals(genre)).toList().size();
+	private static void showSameTitleAnimes(List<Anime> animes, String animeName) {
+		System.out.println("【検索したアニメの結果(%d)】".formatted(animes.size()));
+		if (animes.size() > 0 && !(animeName.isEmpty())) {
+			animes.forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
+								.formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
 		} else {
-			throw new IllegalArgumentException("Animes or Genre must have data.");
+			System.out.println("【🥺検索した%sが見つかりませんでした】".formatted(animeName));
+		}
+	}
+
+	private static void showSameGenreAnimes(List<Anime> animes, String genreName) {
+		System.out.println("【検索したアニメの結果(%d)】".formatted(animes.size()));
+		if (animes.size() > 0 && !(genreName.isEmpty())) {
+			System.out.println("%s(%d)".formatted(Genre.valueOf(genreName.toUpperCase()), animes.size()));
+			animes.forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
+								.formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
+		} else {
+			System.out.println("【🥺検索した%sが見つかりませんでした】".formatted(genreName));
 		}
 	}
 
@@ -63,8 +94,16 @@ public class Main {
 		return animes.stream().max(Comparator.comparing(Anime::getRating)).get().getRating();
 	}
 
+	private static long sameGenreAnimesCount(List<Anime> animes, Genre genre) {
+		if (animes.size() > 0 && Objects.nonNull(genre)) {
+			return animes.stream().filter(a -> a.getGenre().equals(genre)).count();
+		} else {
+			throw new IllegalArgumentException("Animes or Genre must have data.");
+		}
+	}
+
 	private static String toJapaneseFormat(LocalDate releasedDate) {
-		if(releasedDate != null) {
+		if (releasedDate != null) {
 			return releasedDate.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日"));
 		} else {
 			throw new IllegalArgumentException("ReleasedDate cannot be null.");
