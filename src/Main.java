@@ -54,12 +54,12 @@ public class Main {
 			System.out.println("【見たいアニメは何でしょうか】");
 			String animeName = scan.nextLine();
 			List<Anime> sameTitleAnimes = animes.stream().filter(a -> a.getTitle().toLowerCase().contains(animeName)).collect(Collectors.toList());
-			showSameTitleAnimes(animeName, sameTitleAnimes);
+			showSameTitleAnimes(sameTitleAnimes, animeName);
 
 			System.out.println("【見たいアニメの種類は何でしょうか】");
 			String animeGenre = scan.nextLine();
 			List<Anime> sameGenreAnimes = animes.stream().filter(a -> a.getGenre().toString().toLowerCase().equals(animeGenre)).collect(Collectors.toList());
-			showSameGenreAnimes(animeGenre, sameGenreAnimes);
+			showSameGenreAnimes(sameGenreAnimes, animeGenre);
 		}
 
 		if (animes.stream().map(Anime::getRating).allMatch(r -> r > 3)) {
@@ -69,9 +69,9 @@ public class Main {
 		}
 	}
 
-	private static void showSameTitleAnimes(String animeName, List<Anime> animes) {
+	private static void showSameTitleAnimes(List<Anime> animes, String animeName) {
 		System.out.println("【検索したアニメの結果(%d)】".formatted(animes.size()));
-		if (animes.size() > 0 && animeName.length() > 0) {
+		if (animes.size() > 0 && !(animeName.isEmpty())) {
 			animes.forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
 								.formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
 		} else {
@@ -79,9 +79,9 @@ public class Main {
 		}
 	}
 
-	private static void showSameGenreAnimes(String genreName, List<Anime> animes) {
+	private static void showSameGenreAnimes(List<Anime> animes, String genreName) {
 		System.out.println("【検索したアニメの結果(%d)】".formatted(animes.size()));
-		if (animes.size() > 0 && genreName.length() > 0) {
+		if (animes.size() > 0 && !(genreName.isEmpty())) {
 			System.out.println("%s(%d)".formatted(Genre.valueOf(genreName.toUpperCase()), animes.size()));
 			animes.forEach(a -> System.out.println("Title: %s, Genre: %s, Rating: %s, Release_Date: %s"
 								.formatted(a.getTitle(), a.getGenre(), a.getRating(), toJapaneseFormat(a.getReleasedDate()))));
@@ -94,9 +94,9 @@ public class Main {
 		return animes.stream().max(Comparator.comparing(Anime::getRating)).get().getRating();
 	}
 
-	private static int sameGenreAnimesCount(List<Anime> animes, Genre genre) {
+	private static long sameGenreAnimesCount(List<Anime> animes, Genre genre) {
 		if (animes.size() > 0 && Objects.nonNull(genre)) {
-			return animes.stream().filter(a -> a.getGenre().equals(genre)).toList().size();
+			return animes.stream().filter(a -> a.getGenre().equals(genre)).count();
 		} else {
 			throw new IllegalArgumentException("Animes or Genre must have data.");
 		}
